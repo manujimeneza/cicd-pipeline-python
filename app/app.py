@@ -1,11 +1,19 @@
+"""Rutas y configuración de la aplicación web de la calculadora."""
+
+import os
+
 from flask import Flask, render_template, request
+from flask_wtf.csrf import CSRFProtect
 from .calculadora import sumar, restar, multiplicar, dividir
 
 app = Flask(__name__)
+app.config["SECRET_KEY"] = os.environ.get("FLASK_SECRET_KEY")
+CSRFProtect(app)
 
 
 @app.route("/", methods=["GET", "POST"])
 def index():
+    """Muestra la calculadora y procesa la operación solicitada."""
     resultado = None
     if request.method == "POST":
         try:
@@ -31,5 +39,5 @@ def index():
     return render_template("index.html", resultado=resultado)
 
 
-if __name__ == "__main__":
-    app.run(debug=True, port=5001, host="0.0.0.0")
+if __name__ == "__main__":  # pragma: no cover
+    app.run(debug=False, port=5001)
